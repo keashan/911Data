@@ -29,19 +29,6 @@ def load_csv(file_name):
     df = pd.read_csv(file_name)
     return df
 
-
-@cache.memoize(timeout=3600)
-def load_data(file_name):
-    df = load_csv(file_name)
-    # df["Month"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%B")
-    # df["Month_Number"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%m")
-    # df["OFFENSE_TIME"] = df["OFFENSE_TIME"].replace({"PT": ""})
-    # df["Offence Time"] = df.apply(lambda row: format_date(row), axis=1)
-    # df["Month"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%B")
-    # df["Weekday"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%A")
-    return df
-
-
 def format_date(row):
     pattern = "\d+"
     date = row["OFFENSE_TIME"]
@@ -54,7 +41,6 @@ def format_date(row):
     return new_time
 
 
-@cache.memoize(timeout=3600)
 def get_call_data(month, category):
     df = load_csv("files/911_data.csv")
     if month:
@@ -71,8 +57,6 @@ def get_call_data(month, category):
         else:
             selected_categories.append(category)
         df = df[df["FINAL_DISPO"].isin(selected_categories)]
-    # df["Month"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%B")
-    # df["Weekday"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%A")
     return df
 
 
