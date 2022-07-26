@@ -259,7 +259,7 @@ def update_graph(filter_month, filter_category):
         showlegend=False)
 
     fig_animated_hour = px.bar(df_hour, x="Month", y="Call Count", color="Month", animation_frame="Offence Time",
-                               height=350, range_y=[0, df_hour["Call Count"].max()])
+                               height=350, range_y=[0, df_hour["Call Count"].max()], text="Call Count")
 
     fig_animated_hour.update_layout({
         'paper_bgcolor': 'rgba(0,0,0,0)',
@@ -270,7 +270,7 @@ def update_graph(filter_month, filter_category):
     fig_animated_hour.update_layout(legend={"orientation": "v"}, legend_x=1, legend_y=1)
 
     fig_animated_hour.layout.updatemenus[0].buttons[0].args[1]["frame"] = {
-        "duration": 2_500}
+        "duration": 1_500}
     fig_animated_hour.layout.updatemenus[0].buttons[0].args[1]["transition"]["duration"] = 1_000
 
     return fig_hour, fig_animated_hour
