@@ -31,7 +31,7 @@ def home_page():
             dbc.Col([
                 dbc.Row([
                     html.Div("Summary in Numbers", className="card_title")
-                ],className="row_class"),
+                ], className="row_class"),
                 dbc.Row([
                     dbc.Col([
                         html.Div(children=[
@@ -124,6 +124,18 @@ def home_page():
             ]),
 
         ], className="mb-2"),
+        dbc.Row([
+            html.Div(children=[
+                html.Div(children=[
+                    html.Div("Total Calls by Hour of the Day - Animated", className="card_title"),
+                    dcc.Loading(
+                        dcc.Graph(id="animated_calls_by_hour_graph"),
+                        type="dot",
+                    ),
+                ], className="card")
+            ]),
+
+        ], className="mb-2"),
 
     ], fluid=True)
 
@@ -210,7 +222,8 @@ def update_call_type_description_analysis(month, category):
 
 
 @app.callback(
-    Output("calls_by_hour_graph", "figure"),
+    [Output("calls_by_hour_graph", "figure"),
+     Output("animated_calls_by_hour_graph", "figure")],
     [Input("filter_month", "value"),
      Input("filter_category", "value")]
 )
@@ -245,4 +258,19 @@ def update_graph(filter_month, filter_category):
     },
         showlegend=False)
 
-    return fig_hour
+    fig_animated_hour = px.bar(df_hour, x="Month", y="Call Count", color="Month", animation_frame="Offence Time",
+                               height=350, range_y=[0, df_hour["Call Count"].max()])
+
+    fig_animated_hour.update_layout({
+        'paper_bgcolor': 'rgba(0,0,0,0)',
+        'plot_bgcolor': 'rgba(0,0,0,0)',
+    },
+        showlegend=False)
+
+    fig_animated_hour.update_layout(legend={"orientation": "v"}, legend_x=1, legend_y=1)
+
+    fig_animated_hour.layout.updatemenus[0].buttons[0].args[1]["frame"] = {
+        "duration": 2_500}
+    fig_animated_hour.layout.updatemenus[0].buttons[0].args[1]["transition"]["duration"] = 1_000
+
+    return fig_hour, fig_animated_hour

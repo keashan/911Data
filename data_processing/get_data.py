@@ -33,12 +33,12 @@ def load_csv(file_name):
 @cache.memoize(timeout=3600)
 def load_data(file_name):
     df = load_csv(file_name)
-    #df["Month"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%B")
-    #df["Month_Number"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%m")
-    #df["OFFENSE_TIME"] = df["OFFENSE_TIME"].replace({"PT": ""})
-    #df["Offence Time"] = df.apply(lambda row: format_date(row), axis=1)
-    #df["Month"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%B")
-    #df["Weekday"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%A")
+    # df["Month"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%B")
+    # df["Month_Number"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%m")
+    # df["OFFENSE_TIME"] = df["OFFENSE_TIME"].replace({"PT": ""})
+    # df["Offence Time"] = df.apply(lambda row: format_date(row), axis=1)
+    # df["Month"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%B")
+    # df["Weekday"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%A")
     return df
 
 
@@ -71,14 +71,15 @@ def get_call_data(month, category):
         else:
             selected_categories.append(category)
         df = df[df["FINAL_DISPO"].isin(selected_categories)]
-    #df["Month"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%B")
-    #df["Weekday"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%A")
+    # df["Month"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%B")
+    # df["Weekday"] = pd.to_datetime(df["OFFENSE_DATE"]).dt.strftime("%A")
     return df
 
 
 def get_word_cloud(call_type_list):
     custom_stop_words = {"W", "HI", "18YRS", "LIC", "1091AB", " Combined", "447A", "Violation", "Vehicle", "Stop",
-                         "Parking", "Female", "check", "unk", "calls", "svrn", "type", "amb", "run", "call", "person"}
+                         "Parking", "Female", "check", "unk", "calls", "svrn", "type", "amb", "run", "call", "person",
+                         "officer", "found", "send"}
     stop_words = STOPWORDS
     stop_words.update(custom_stop_words)
     call_type_list = list(set(call_type_list))
