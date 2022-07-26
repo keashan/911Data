@@ -228,7 +228,7 @@ def update_call_type_description_analysis(month, category):
      Input("filter_category", "value")]
 )
 def update_graph(filter_month, filter_category):
-    df_data = get_data.load_csv("filesg/911_data.csv")
+    df_data = get_data.load_csv("files/911_data.csv")
     selected_months = []
 
     if filter_month:

@@ -16,7 +16,7 @@ def get_month_list():
 
 @cache.memoize(timeout=3600)
 def get_category_list():
-    df = load_csv("filesg/911_data.csv")
+    df = load_csv("files/911_data.csv")
     category_list = []
     dispo_list = df["FINAL_DISPO"].unique().tolist()
     dispo_list.sort()
@@ -42,7 +42,7 @@ def format_date(row):
 
 
 def get_call_data(month, category):
-    df = load_csv("filesg/911_data.csv")
+    df = load_csv("files/911_data.csv")
     if month:
         selected_months = []
         if isinstance(month, list):
