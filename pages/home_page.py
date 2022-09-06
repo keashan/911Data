@@ -140,6 +140,7 @@ def home_page():
     ], fluid=True)
 
 
+# Generate KPI numbers
 @app.callback(
     [Output("total_calls", "children"),
      Output("no_report", "children"),
@@ -160,7 +161,7 @@ def update_summary_numbers(month, category):
     unable_to_locate = df_summary[df_summary["FINAL_DISPO"].str.contains("Unable to locate", case=False)].shape[0]
     return all_calls, no_report, cancelled_calls, report_taken, no_response, unable_to_locate
 
-
+# Generate total calls by month graph, total calls by weekday graph, total calls by priority graph
 @app.callback(
     [Output("total_calls_by_month", "figure"),
      Output("total_calls_by_weekday", "figure"),
@@ -169,25 +170,30 @@ def update_summary_numbers(month, category):
      Input("filter_category", "value")]
 )
 def update_total_calls_by_month_weekday(month, category):
+    # get filtered data
     df_call_data = get_data.get_call_data(month, category)
+    # rename "EID" column to "Call Count"
     df_call_data.rename(columns={"EID": "Call Count"}, inplace=True)
+    # group data to have total calls by priority, weekday
     df_priority = df_call_data.groupby(["PRIORITY"]).count()["Call Count"].reset_index()
     df_call_data = df_call_data.groupby(["Weekday", "Month"]).count()["Call Count"].reset_index()
+    # create figure for total calls by weekday
     fig_weekday = px.bar(df_call_data, x="Weekday", y="Call Count", color="Month", height=350)
     fig_weekday.update_layout({
         'paper_bgcolor': 'rgba(0,0,0,0)',
         'plot_bgcolor': 'rgba(0,0,0,0)',
     },
         showlegend=False)
-
+    # Group data to have total calls by month
     df_call_data = df_call_data.groupby("Month").sum().reset_index()
+    # Create figure for total calls by month
     fig_month = px.bar(df_call_data, x="Month", y="Call Count", color="Month", height=350)
     fig_month.update_layout({
         'paper_bgcolor': 'rgba(0,0,0,0)',
         'plot_bgcolor': 'rgba(0,0,0,0)',
     },
         showlegend=False)
-
+    # Create figure for total calls by priority
     fig_priority = px.pie(df_priority, values="Call Count", names="PRIORITY", color="PRIORITY", height=350)
     fig_priority.update_layout({
         'paper_bgcolor': 'rgba(0,0,0,0)',
@@ -198,15 +204,20 @@ def update_total_calls_by_month_weekday(month, category):
     return fig_month, fig_weekday, fig_priority
 
 
+# Generate call type description analysis graph(wordcloud)
 @app.callback(
     Output("call_type_description_analysis", "figure"),
     [Input("filter_month", "value"),
      Input("filter_category", "value")]
 )
 def update_call_type_description_analysis(month, category):
+    # get filtered data
     df_call_data = get_data.get_call_data(month, category)
+    # Convert to call type data to a list
     call_type_list = df_call_data["CALL_TYPE"].to_list()
+    # Create the wordcloud using the call type list
     word_cloud = get_data.get_word_cloud(call_type_list)
+    # Create figure for wordcloud
     fig_cloud = px.imshow(word_cloud, height=350)
     fig_cloud.update_xaxes(visible=False)
     fig_cloud.update_yaxes(visible=False)
@@ -221,6 +232,7 @@ def update_call_type_description_analysis(month, category):
     return fig_cloud
 
 
+# Generate total calls by hour of the day and animated calls by hour of the day graph
 @app.callback(
     [Output("calls_by_hour_graph", "figure"),
      Output("animated_calls_by_hour_graph", "figure")],
@@ -228,9 +240,10 @@ def update_call_type_description_analysis(month, category):
      Input("filter_category", "value")]
 )
 def update_graph(filter_month, filter_category):
+    # Load csv file again.
     df_data = get_data.load_csv("files/911_data.csv")
     selected_months = []
-
+    # Filter data based on month and category
     if filter_month:
         if isinstance(filter_month, list):
             selected_months = filter_month
@@ -246,10 +259,14 @@ def update_graph(filter_month, filter_category):
             selected_categories.append(filter_category)
         df_data = df_data[df_data["FINAL_DISPO"].isin(selected_categories)]
 
+    # Sort data by time and month
     df_data.sort_values(by=["Offence Time", "Month_Number"], inplace=True)
+    # Group data by hour of the day and month
     df_hour = df_data.groupby(["Month", "Offence Time"]).size().to_frame("EID").reset_index()
+    # Rename "EID" column to "Call Count"
     df_hour.rename(columns={"EID": "Call Count"}, inplace=True)
 
+    # Create figure for total calls by hour of the day
     fig_hour = px.bar(df_hour, x="Offence Time", y="Call Count", color="Month", height=350)
 
     fig_hour.update_layout({
@@ -258,6 +275,7 @@ def update_graph(filter_month, filter_category):
     },
         showlegend=False)
 
+    # Create figure for animated calls by hour of the day
     fig_animated_hour = px.bar(df_hour, x="Month", y="Call Count", color="Month", animation_frame="Offence Time",
                                height=350, range_y=[0, df_hour["Call Count"].max()], text="Call Count")
 
@@ -267,8 +285,10 @@ def update_graph(filter_month, filter_category):
     },
         showlegend=False)
 
+    # Update legend position
     fig_animated_hour.update_layout(legend={"orientation": "v"}, legend_x=1, legend_y=1)
 
+    # Update frame and transition duration
     fig_animated_hour.layout.updatemenus[0].buttons[0].args[1]["frame"] = {
         "duration": 1_500}
     fig_animated_hour.layout.updatemenus[0].buttons[0].args[1]["transition"]["duration"] = 1_000
