@@ -6,7 +6,10 @@ from flask import Flask
 from flask_caching import Cache
 
 # Initialize the app
-app = dash.Dash(__name__, suppress_callback_exceptions=True,
+
+server = Flask(__name__)
+
+app = dash.Dash(server=server,
                 meta_tags=[{'name': 'viewport', 'content': "width=device-width, initial-scale=1.0"}],
                 external_stylesheets=[dbc.themes.LUX], title="911 Data Analysis")
 cache = Cache(app.server, config={
