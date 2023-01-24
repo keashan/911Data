@@ -99,3 +99,4 @@ def save_pickle():
     file_name = "files/911_data.csv"
     df = pd.read_csv(file_name, parse_dates=["EID", "PRIORITY", "OFFENSE_DATE", "OFFENSE_TIME", "CALL_TYPE", "FINAL_DISPO"])
     df.to_pickle("files/911_data.pkl")
+    del df
