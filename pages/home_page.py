@@ -159,6 +159,7 @@ def update_summary_numbers(month, category):
     report_taken = df_summary[df_summary["FINAL_DISPO"].str.contains("Report taken", case=False)].shape[0]
     no_response = df_summary[df_summary["FINAL_DISPO"].str.contains("No response", case=False)].shape[0]
     unable_to_locate = df_summary[df_summary["FINAL_DISPO"].str.contains("Unable to locate", case=False)].shape[0]
+    del df_summary
     return all_calls, no_report, cancelled_calls, report_taken, no_response, unable_to_locate
 
 # Generate total calls by month graph, total calls by weekday graph, total calls by priority graph
@@ -200,7 +201,8 @@ def update_total_calls_by_month_weekday(month, category):
         'plot_bgcolor': 'rgba(0,0,0,0)',
     },
         showlegend=False)
-
+    del df_call_data
+    del df_priority
     return fig_month, fig_weekday, fig_priority
 
 
@@ -215,6 +217,7 @@ def update_call_type_description_analysis(month, category):
     df_call_data = get_data.get_call_data(month, category)
     # Convert to call type data to a list
     call_type_list = df_call_data["CALL_TYPE"].to_list()
+    del df_call_data
     # Create the wordcloud using the call type list
     word_cloud = get_data.get_word_cloud(call_type_list)
     # Create figure for wordcloud
@@ -263,12 +266,12 @@ def update_graph(filter_month, filter_category):
     df_data.sort_values(by=["Offence Time", "Month_Number"], inplace=True)
     # Group data by hour of the day and month
     df_hour = df_data.groupby(["Month", "Offence Time"]).size().to_frame("EID").reset_index()
+    del df_data
     # Rename "EID" column to "Call Count"
     df_hour.rename(columns={"EID": "Call Count"}, inplace=True)
 
     # Create figure for total calls by hour of the day
     fig_hour = px.bar(df_hour, x="Offence Time", y="Call Count", color="Month", height=350)
-
     fig_hour.update_layout({
         'paper_bgcolor': 'rgba(0,0,0,0)',
         'plot_bgcolor': 'rgba(0,0,0,0)',
@@ -292,5 +295,5 @@ def update_graph(filter_month, filter_category):
     fig_animated_hour.layout.updatemenus[0].buttons[0].args[1]["frame"] = {
         "duration": 1_500}
     fig_animated_hour.layout.updatemenus[0].buttons[0].args[1]["transition"]["duration"] = 1_000
-
+    del df_hour
     return fig_hour, fig_animated_hour

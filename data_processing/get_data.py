@@ -23,6 +23,7 @@ def get_category_list():
     dispo_list = df["FINAL_DISPO"].unique().tolist()
     dispo_list.sort()
     category_list = [{"label": item, "value": item} for item in dispo_list]
+    del df
     return category_list
 
 
@@ -71,7 +72,7 @@ def get_word_cloud(call_type_list):
     # Custom stop words
     custom_stop_words = {"W", "HI", "18YRS", "LIC", "1091AB", " Combined", "447A", "Violation", "Vehicle", "Stop",
                          "Parking", "Female", "check", "unk", "calls", "svrn", "type", "amb", "run", "call", "person",
-                         "officer", "found", "send"}
+                         "officer", "found", "send", "related", "unknown"}
     stop_words = STOPWORDS
     stop_words.update(custom_stop_words)
     call_type_list = list(set(call_type_list))
