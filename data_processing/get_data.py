@@ -2,13 +2,13 @@ from datetime import datetime
 
 import pandas as pd
 
-from app import cache
+# from app import cache
 from wordcloud import WordCloud, STOPWORDS
 import re
 
 
 # Create the dictionary to feed month
-@cache.memoize(timeout=3600)
+#@cache.memoize(timeout=3600)
 def get_month_list():
     month_list = ["January", "February", "March", "April", "May", "June"]
     month_list = [{"label": month, "value": month} for month in month_list]
@@ -16,9 +16,9 @@ def get_month_list():
 
 
 # Get the category list from the data set
-@cache.memoize(timeout=3600)
+#@cache.memoize(timeout=3600)
 def get_category_list():
-    df = load_csv("files/911_data.csv")
+    df = load_data()
     category_list = []
     dispo_list = df["FINAL_DISPO"].unique().tolist()
     dispo_list.sort()
@@ -28,9 +28,10 @@ def get_category_list():
 
 
 # Load the data set
-@cache.memoize(timeout=3600)
-def load_csv(file_name):
-    df = pd.read_csv(file_name)
+#@cache.memoize(timeout=3600)
+def load_data():
+    file_name = "files/911_data.pkl"
+    df = pd.read_pickle(file_name)
     return df
 
 
@@ -49,7 +50,7 @@ def format_date(row):
 
 # Filter data based on the month and category selected
 def get_call_data(month, category):
-    df = load_csv("files/911_data.csv")
+    df = load_data()
     if month:
         selected_months = []
         if isinstance(month, list):
@@ -91,3 +92,10 @@ def get_word_cloud(call_type_list):
         word_cloud.generate("No data")
 
     return word_cloud
+
+
+# Read CSV and save as a pickle file
+def save_pickle():
+    file_name = "files/911_data.csv"
+    df = pd.read_csv(file_name, parse_dates=["EID", "PRIORITY", "OFFENSE_DATE", "OFFENSE_TIME", "CALL_TYPE", "FINAL_DISPO"])
+    df.to_pickle("files/911_data.pkl")

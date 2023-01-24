@@ -244,7 +244,7 @@ def update_call_type_description_analysis(month, category):
 )
 def update_graph(filter_month, filter_category):
     # Load csv file again.
-    df_data = get_data.load_csv("files/911_data.csv")
+    df_data = get_data.load_data()
     selected_months = []
     # Filter data based on month and category
     if filter_month:
