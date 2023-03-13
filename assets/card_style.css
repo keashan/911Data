@@ -1,17 +1,30 @@
+@font-face {
+  font-family: 'digital-7';
+  src: url('digital-7.ttf');
+}
 :root{
-    --back_color:#c4e2ff;
-    --text_color:#148aff;
-    --title_text_color:#148aff;
+    /*--back_color:#161a28;*/
+    --back_color:white;
+    --text_color:#002366;
+    --title_text_color:#002366;
+    --border_color:black;
+    /*--text_color:#148aff;*/
+    /*--title_text_color:#148aff;*/
 }
 .card{
     height: 100%;
-    background-color: var(--back_color);
+    background: var(--back_color);
     color: var(--text_color);
-    border-style: groove;
-    border-color: var(--text_color);
-    border-width: 1px;
-    border-radius: 10px;
-    padding: 5px;
+    border: none;
+    /*border-style: groove;*/
+    /*border-color: var(--border_color);*/
+    /*border-width: 1px;*/
+    /*border-radius: 10px;*/
+    padding: 7px;
+    /*box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.75);*/
+}
+.value_card:hover{
+    background-color:dimgray;
     box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.75);
 }
 .row_class{
@@ -21,6 +34,7 @@
     margin-bottom: 10px;
     margin-top: 10px;
 }
+
 .card_title{
     font-size: 16px;
     font-weight: bold;
@@ -29,11 +43,15 @@
     text-align: center;
     text-transform: uppercase;
     margin-bottom: 5px;
+    padding-bottom: 5px;
 }
-.value_card{
+
+.value_card_title{
     font-size: 24px;
     text-transform: capitalize;
+    /*font-family: "digital-7", serif;*/
+    font-weight: normal;
 }
-.has-value.Select--single>.Select-control .Select-value .Select-value-label, .has-value.is-pseudo-focused.Select--single>.Select-control .Select-value .Select{
-    color: var(--text_color);
+.Select-value-label {
+    color:var(--text_color) !important;
 }

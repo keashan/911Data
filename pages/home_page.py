@@ -7,6 +7,10 @@ from data_processing.get_data import get_category_list, get_month_list
 
 import plotly.express as px
 
+# month_color = {"January": "#FF0000", "February": "#FFA500", "March": "#FFFF00", "April": "#008000", "May": "#0000FF",
+#              "June": "#4B0082"}
+# priority_color = {"1": "#FF0000", "2": "#FFA500", "3": "#FFFF00", "4": "#008000", "5": "#0000FF", "6": "#4B0082"}
+
 
 def home_page():
     return dbc.Container([
@@ -35,39 +39,39 @@ def home_page():
                 dbc.Row([
                     dbc.Col([
                         html.Div(children=[
-                            html.Div("Loading", id="total_calls", className="card_title value_card"),
+                            html.Div("Loading", id="total_calls", className="card_title value_card_title"),
                             html.Div("Total Calls"),
-                        ], className="card")
+                        ], className="card value_card")
                     ], lg=2, xl=2, md=4, sm=4, xs=6, className="mb-2"),
                     dbc.Col([
                         html.Div(children=[
-                            html.Div("Loading", id="no_report", className="card_title value_card"),
+                            html.Div("Loading", id="no_report", className="card_title value_card_title"),
                             html.Div("No Report Required"),
-                        ], className="card")
+                        ], className="card value_card")
                     ], lg=2, xl=2, md=4, sm=4, xs=6, className="mb-2"),
                     dbc.Col([
                         html.Div(children=[
-                            html.Div("Loading", id="cancelled_calls", className="card_title value_card"),
+                            html.Div("Loading", id="cancelled_calls", className="card_title value_card_title"),
                             html.Div("Cancelled Calls"),
-                        ], className="card")
+                        ], className="card value_card")
                     ], lg=2, xl=2, md=4, sm=4, xs=6, className="mb-2"),
                     dbc.Col([
                         html.Div(children=[
-                            html.Div("Loading", id="report_taken", className="card_title value_card"),
+                            html.Div("Loading", id="report_taken", className="card_title value_card_title"),
                             html.Div("Report Taken Calls"),
-                        ], className="card")
+                        ], className="card value_card")
                     ], lg=2, xl=2, md=4, sm=4, xs=6, className="mb-2"),
                     dbc.Col([
                         html.Div(children=[
-                            html.Div("Loading", id="no_response", className="card_title value_card"),
+                            html.Div("Loading", id="no_response", className="card_title value_card_title"),
                             html.Div("No Response Calls"),
-                        ], className="card")
+                        ], className="card value_card")
                     ], lg=2, xl=2, md=4, sm=4, xs=6, className="mb-2"),
                     dbc.Col([
                         html.Div(children=[
-                            html.Div("Loading", id="unable_to_locate", className="card_title value_card"),
+                            html.Div("Loading", id="unable_to_locate", className="card_title value_card_title"),
                             html.Div("Unable to Locate"),
-                        ], className="card")
+                        ], className="card value_card")
                     ], lg=2, xl=2, md=4, sm=4, xs=6, className="mb-2"),
                 ], className="row_class"),
             ], width=9, xs=9, sm=12, md=12, lg=9, xl=9),
@@ -153,14 +157,15 @@ def home_page():
 )
 def update_summary_numbers(month, category):
     df_summary = get_data.get_call_data(month, category)
-    all_calls = df_summary.shape[0]
-    no_report = df_summary[df_summary["FINAL_DISPO"].str.contains("No report required", case=False)].shape[0]
-    cancelled_calls = df_summary[df_summary["FINAL_DISPO"].str.contains("Canceled", case=False)].shape[0]
-    report_taken = df_summary[df_summary["FINAL_DISPO"].str.contains("Report taken", case=False)].shape[0]
-    no_response = df_summary[df_summary["FINAL_DISPO"].str.contains("No response", case=False)].shape[0]
-    unable_to_locate = df_summary[df_summary["FINAL_DISPO"].str.contains("Unable to locate", case=False)].shape[0]
+    all_calls = f'{df_summary.shape[0]:,}'
+    no_report = f'{df_summary[df_summary["FINAL_DISPO"].str.contains("No report required", case=False)].shape[0]:,}'
+    cancelled_calls = f'{df_summary[df_summary["FINAL_DISPO"].str.contains("Canceled", case=False)].shape[0]:,}'
+    report_taken = f'{df_summary[df_summary["FINAL_DISPO"].str.contains("Report taken", case=False)].shape[0]:,}'
+    no_response = f'{df_summary[df_summary["FINAL_DISPO"].str.contains("No response", case=False)].shape[0]:,}'
+    unable_to_locate = f'{df_summary[df_summary["FINAL_DISPO"].str.contains("Unable to locate", case=False)].shape[0]:,}'
     del df_summary
     return all_calls, no_report, cancelled_calls, report_taken, no_response, unable_to_locate
+
 
 # Generate total calls by month graph, total calls by weekday graph, total calls by priority graph
 @app.callback(
@@ -180,9 +185,12 @@ def update_total_calls_by_month_weekday(month, category):
     df_call_data = df_call_data.groupby(["Weekday", "Month"]).count()["Call Count"].reset_index()
     # create figure for total calls by weekday
     fig_weekday = px.bar(df_call_data, x="Weekday", y="Call Count", color="Month", height=350)
+                         # color_discrete_map=month_color)
     fig_weekday.update_layout({
         'paper_bgcolor': 'rgba(0,0,0,0)',
         'plot_bgcolor': 'rgba(0,0,0,0)',
+        'font_color': '#002366',
+        'xaxis_font_size': 12,
     },
         showlegend=False)
     # Group data to have total calls by month
@@ -192,6 +200,7 @@ def update_total_calls_by_month_weekday(month, category):
     fig_month.update_layout({
         'paper_bgcolor': 'rgba(0,0,0,0)',
         'plot_bgcolor': 'rgba(0,0,0,0)',
+        'font_color': '#002366'
     },
         showlegend=False)
     # Create figure for total calls by priority
@@ -199,6 +208,7 @@ def update_total_calls_by_month_weekday(month, category):
     fig_priority.update_layout({
         'paper_bgcolor': 'rgba(0,0,0,0)',
         'plot_bgcolor': 'rgba(0,0,0,0)',
+        'font_color': '#002366'
     },
         showlegend=False)
     del df_call_data
@@ -229,6 +239,7 @@ def update_call_type_description_analysis(month, category):
     fig_cloud.update_layout({
         'paper_bgcolor': 'rgba(0,0,0,0)',
         'plot_bgcolor': 'rgba(0,0,0,0)',
+        'font_color': '#002366'
     },
         showlegend=False)
 
@@ -275,6 +286,7 @@ def update_graph(filter_month, filter_category):
     fig_hour.update_layout({
         'paper_bgcolor': 'rgba(0,0,0,0)',
         'plot_bgcolor': 'rgba(0,0,0,0)',
+        'font_color': '#002366'
     },
         showlegend=False)
 
@@ -285,6 +297,7 @@ def update_graph(filter_month, filter_category):
     fig_animated_hour.update_layout({
         'paper_bgcolor': 'rgba(0,0,0,0)',
         'plot_bgcolor': 'rgba(0,0,0,0)',
+        'font_color': '#002366'
     },
         showlegend=False)
 

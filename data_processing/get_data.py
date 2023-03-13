@@ -7,11 +7,13 @@ from wordcloud import WordCloud, STOPWORDS
 import re
 
 
+months = ["January", "February", "March", "April", "May", "June"]
+weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
 # Create the dictionary to feed month
 #@cache.memoize(timeout=3600)
 def get_month_list():
-    month_list = ["January", "February", "March", "April", "May", "June"]
-    month_list = [{"label": month, "value": month} for month in month_list]
+    month_list = [{"label": month, "value": month} for month in months]
     return month_list
 
 
@@ -84,7 +86,7 @@ def get_word_cloud(call_type_list):
                            height=400,
                            random_state=21,
                            max_font_size=300,
-                           background_color="#c4e2ff",
+                           background_color="#002366",
                            stopwords=stop_words)
     if words:
         word_cloud.generate(words)
@@ -98,5 +100,7 @@ def get_word_cloud(call_type_list):
 def save_pickle():
     file_name = "files/911_data.csv"
     df = pd.read_csv(file_name, parse_dates=["EID", "PRIORITY", "OFFENSE_DATE", "OFFENSE_TIME", "CALL_TYPE", "FINAL_DISPO"])
+    df["Weekday"] = pd.Categorical(df["Weekday"], categories=weekdays, ordered=True)
+    df["Month"] = pd.Categorical(df["Month"], categories=months, ordered=True)
     df.to_pickle("files/911_data.pkl")
     del df
