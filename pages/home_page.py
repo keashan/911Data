@@ -190,7 +190,6 @@ def update_total_calls_by_month_weekday(month, category):
         'paper_bgcolor': 'rgba(0,0,0,0)',
         'plot_bgcolor': 'rgba(0,0,0,0)',
         'font_color': '#002366',
-        'xaxis_font_size': 12,
     },
         showlegend=False)
     # Group data to have total calls by month
