@@ -88,6 +88,7 @@ def get_word_cloud(call_type_list):
                            max_font_size=300,
                            background_color="white",
                            stopwords=stop_words)
+
     if words:
         word_cloud.generate(words)
     else:
