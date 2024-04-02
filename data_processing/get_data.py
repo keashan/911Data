@@ -6,19 +6,19 @@ import pandas as pd
 from wordcloud import WordCloud, STOPWORDS
 import re
 
-
 months = ["January", "February", "March", "April", "May", "June"]
 weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
+
 # Create the dictionary to feed month
-#@cache.memoize(timeout=3600)
+# @cache.memoize(timeout=3600)
 def get_month_list():
     month_list = [{"label": month, "value": month} for month in months]
     return month_list
 
 
 # Get the category list from the data set
-#@cache.memoize(timeout=3600)
+# @cache.memoize(timeout=3600)
 def get_category_list():
     df = load_data()
     category_list = []
@@ -30,7 +30,7 @@ def get_category_list():
 
 
 # Load the data set
-#@cache.memoize(timeout=3600)
+# @cache.memoize(timeout=3600)
 def load_data():
     file_name = "files/911_data.pkl"
     df = pd.read_pickle(file_name)
@@ -100,7 +100,7 @@ def get_word_cloud(call_type_list):
 # Read CSV and save as a pickle file
 def save_pickle():
     file_name = "files/911_data.csv"
-    df = pd.read_csv(file_name, parse_dates=["EID", "PRIORITY", "OFFENSE_DATE", "OFFENSE_TIME", "CALL_TYPE", "FINAL_DISPO"])
+    df = pd.read_csv(file_name, parse_dates=["OFFENSE_DATE", "OFFENSE_TIME"])
     df["Weekday"] = pd.Categorical(df["Weekday"], categories=weekdays, ordered=True)
     df["Month"] = pd.Categorical(df["Month"], categories=months, ordered=True)
     df.to_pickle("files/911_data.pkl")

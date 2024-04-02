@@ -193,7 +193,7 @@ def update_total_calls_by_month_weekday(month, category):
     },
         showlegend=False)
     # Group data to have total calls by month
-    df_call_data = df_call_data.groupby("Month").sum().reset_index()
+    df_call_data = df_call_data.groupby("Month")[["Call Count"]].sum().reset_index()
     # Create figure for total calls by month
     fig_month = px.bar(df_call_data, x="Month", y="Call Count", color="Month", height=350)
     fig_month.update_layout({

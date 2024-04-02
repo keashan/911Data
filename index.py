@@ -13,11 +13,11 @@ from pages import home_page
 
 warnings.filterwarnings("ignore")
 
-db = SQLAlchemy(app.server)
-config = configparser.ConfigParser()
-con = db.engine
-
-db.init_app(server)
+# db = SQLAlchemy(app.server)
+# config = configparser.ConfigParser()
+# con = db.engine
+#
+# db.init_app(server)
 
 # setup login manager
 login_manager = LoginManager()
